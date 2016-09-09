@@ -1,76 +1,79 @@
 var input = [
-"3",
+"4",
 "1 1",
 "1 2",
-"3 3"
+"3 3",
+"2 1"
 ];
 
 gameOfBottles(input);
 function gameOfBottles(input){
 
-	var figures = parseInt(input[0]);
+	//*****************************  INITIAL DECLARATIONS  *******************************
+	var figuresCount = parseInt(input[0]);
 	var coordinates = input.splice(1);
 
 	var letterIndexes = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
-	function Figure(x, y, letterIndex){
+	//*****************************  FIGURE OBJECT AND FIGURES ARRAY  *******************************
+	function Figure(x, y, letter){
 		this.x = x;
 		this.y = y;
-		this.letterIndex = letterIndex;
-		this.closestFigures = [];
+		this.letter = letter;
+		this.others = [];
+	}
+	var figures = [];
+
+	createFigures();
+	function createFigures(){
+		coordinates.forEach( function(coor, index) {
+			var arr = coor.split(" ");
+			var x = parseInt(arr[0]);
+			var y = parseInt(arr[1]);
+
+			var figure = new Figure(x, y, letterIndexes[index]);
+			figures.push(figure);
+		});
 	}
 
-	coordinates.forEach( function(el, index) {
-		coordinates[index] = el.split(" ");
-		var currentFigure = new Figure(parseInt(coordinates[index][0]), parseInt(coordinates[index][1]), letterIndexes[index]);
-		coordinates[index] = currentFigure;
-	});
+	//*****************************  DISTANCE  *******************************
+	function Distance(length, figure){
+		this.length = length;
+		this.figure = figure;
+	}
 
-	var figureCoordinates = coordinates;
+	calculateDistanceToOtherFigures();
+	function calculateDistanceToOtherFigures(){
+		figures.forEach( function(figure, index) {
+			iterateOverOthers(figure);
+			console.log(figure);
+			console.log();
+		});
+	}
 
-	// coordinates.forEach( function(figCoord, index) {
-	// 	var x = figCoord[0];
-	// 	var y = figCoord[1];
+	function iterateOverOthers(figure){
+		figures.forEach( function(currentFig, index) {
+			if (figure.letter !== currentFig.letter) {
+				var xCells;
+				var yCells;
+				if (figure.x >= currentFig.x) {
+					xCells = figure.x - currentFig.x;
+				} else {
+					xCells = currentFig.x - figure.x;
+				}
 
-	// 	findClosestFigure(x, y, index);
-	// 	console.log('');
-	// });
+				if (figure.y >= currentFig.y) {
+					yCells = figure.y - currentFig.y;
+				} else {
+					yCells = currentFig.y - figure.y;
+				}
 
-	// function findClosestFigure(x, y, index){
-		
-	// 	var shortestDistance = null;
-
-	// 	coordinates.forEach( function(figCoord, currentInd) {
-	// 		if (index !== currentInd) {
-	// 			var xCells = 0;
-	// 			var yCells = 0;
-	// 			var currentX = figCoord[0];
-	// 			var currentY = figCoord[1];
+				var totalDistance = xCells + yCells;
 				
-	// 			if (x >= currentX) {
-	// 				xCells = x - currentX;
-	// 			} else {
-	// 				xCells = currentX - x;
-	// 			}
+				var distance = new Distance(totalDistance, currentFig);
+				figure.others.push(distance);
+			}
 
-	// 			if (y >= currentY) {
-	// 				yCells = y - currentY;
-	// 			} else {
-	// 				yCells = currentY - y;
-	// 			}
-
-	// 			var totalDistance = xCells + yCells;
-
-	// 			if (shortestDistance === null) {
-	// 				shortestDistance = totalDistance;
-	// 			} else {
-	// 				if (totalDistance < shortestDistance) {
-	// 					shortestDistance = totalDistance;
-	// 				}
-	// 			}
-
-	// 			console.log(xCells, yCells, totalDistance, shortestDistance);
-	// 		}
-	// 	});
-	// }
+		});
+	}
 }
