@@ -13,7 +13,7 @@ function gameOfBottles(input){
 	var figuresCount = parseInt(input[0]);
 	var coordinates = input.splice(1);
 
-	var letterIndexes = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+	var letterIndexes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 	//*****************************  FIGURE OBJECT AND FIGURES ARRAY  *******************************
 	function Figure(x, y, letter){
@@ -46,8 +46,6 @@ function gameOfBottles(input){
 	function calculateDistanceToOtherFigures(){
 		figures.forEach( function(figure, index) {
 			iterateOverOthers(figure);
-			console.log(figure);
-			console.log();
 		});
 	}
 
@@ -76,4 +74,78 @@ function gameOfBottles(input){
 
 		});
 	}
+
+	//*****************************  FIND SHORTEST DISTANCE  *******************************
+	var arrDistances = [];
+	function PointsDistance(one, two, distance){
+		this.one = one;
+		this.two = two;
+		this.distance = distance;
+	}
+	createArrDistances(figures, 0);
+	function createArrDistances(figures){
+		figures.forEach( function(figure, index) {
+			figure.others.forEach( function(distance, index) {
+				var currentDist = new PointsDistance(figure.letter, distance.figure.letter, distance.length);
+				arrDistances.push(currentDist);
+			});
+		});
+	}
+
+	//Create array of letters equaling the number of input points
+	var allLetters = [];
+
+	for (var i = 0; i < figuresCount; i++) {
+		allLetters.push(letterIndexes[i]);
+	}
+
+	var word = allLetters.join('');
+
+	function allAnagrams (word) {
+	  if (word.length < 2) {
+	    return [word];
+	  } else {
+	      var allAnswers = [];
+	      for (var i = 0; i < word.length; i++) {
+	        var letter = word[i];
+	        var shorterWord = word.substr(0, i) + word.substr(i + 1, word.length - 1);
+	        var shortwordArray = allAnagrams(shorterWord);
+	        for (var j = 0; j < shortwordArray.length; j++) {
+	          allAnswers.push((letter + shortwordArray[j]));
+	        }
+	      }
+	      return allAnswers;
+	  }
+	}
+
+	//find all combinations of input letters and assign them to the wordsArray
+	var wordsArray = allAnagrams(word);
+
+	var shortestDistance = null;
+
+	//Iterate over the letters in the words array two by two and sum all distances between them. Then assign the shortest distance to 
+	//shortestDistance
+	wordsArray.forEach( function(w, index) {
+		var currentLength = 0;
+		for (var i = 0; i < w.length - 1; i++) {
+			var one = w[i];
+			var two = w[i + 1];
+
+			var distance = arrDistances.filter(function(dist){
+				return dist.one === one && dist.two === two;
+			})[0];
+
+			currentLength += distance.distance;
+		}
+		if (shortestDistance === null) {
+			shortestDistance = currentLength;
+		}
+
+		if (currentLength < shortestDistance) {
+			shortestDistance = currentLength;
+		}
+	});
+
+	//Output the shortest distance
+	console.log(shortestDistance);
 }
