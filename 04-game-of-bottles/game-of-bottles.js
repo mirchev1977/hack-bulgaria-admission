@@ -152,10 +152,8 @@ function gameOfBottles(input){
 				return dist.one === one && dist.two === two;
 			})[0];
 			currentLength += distance.distance;
-			console.log(distance, currentLength);
 		}
 
-		console.log();
 		if (shortestDistance === null) {
 			shortestDistance = currentLength;
 		}
