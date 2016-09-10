@@ -1,9 +1,26 @@
+// var input = [
+// "4",
+// "1 1",
+// "1 2",
+// "3 3",
+// "2 1"
+// ];
+
+// var input = [
+// "4",
+// "1 1",
+// "8 8",
+// "7 6",
+// "8 3"
+// ];
+
 var input = [
-"4",
+"5",
 "1 1",
-"1 2",
-"3 3",
-"2 1"
+"8 8",
+"7 6",
+"8 3",
+"4 5"
 ];
 
 gameOfBottles(input);
@@ -134,9 +151,11 @@ function gameOfBottles(input){
 			var distance = arrDistances.filter(function(dist){
 				return dist.one === one && dist.two === two;
 			})[0];
-
 			currentLength += distance.distance;
+			console.log(distance, currentLength);
 		}
+
+		console.log();
 		if (shortestDistance === null) {
 			shortestDistance = currentLength;
 		}
